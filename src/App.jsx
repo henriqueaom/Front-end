@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import api from './service/api';
-import logoclose from "./img/close.svg"
+import logoclose from "./img/close.svg";
 import './App.css';
-
 
 function App() {
   const [name, setName] = useState('');
@@ -29,23 +28,19 @@ function App() {
     if (name.trim() !== '' && date.trim() !== '') {
       if (isFutureDate(date)) {
         post();
-
         setReminders([...reminders, { id, name, date }]);
         setName('');
         setDate('');
       } else {
         setErro(true);
       }
-
     }
   };
 
   const isFutureDate = (dateString) => {
- 
     const date = new Date(dateString);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     return date > today;
   };
 
@@ -62,7 +57,7 @@ function App() {
       .catch((err) => {
         console.error("ops! ocorreu um erro" + err);
       });
-  }
+  };
 
   const post = async () => {
     api
@@ -76,23 +71,17 @@ function App() {
       .catch((err) => {
         console.error("ops! ocorreu um erro" + err);
       });
-  }
+  };
 
   const remove = (id) => {
-
     api.delete(`delete/${id}`, {
       headers: { 'Accept': 'application/json' },
-
     }).then((response) => {
-
       getAll();
     }).catch((err) => {
       console.error("ops! ocorreu um erro" + err);
     });
   };
-
-
-
 
   return (
     <div className="App">
@@ -110,25 +99,23 @@ function App() {
           />
           <label htmlFor="name">Nome</label>
         </div>
+        {erro ? <p className='erro'>Data inválida</p> : null}
         <div className="control-group-date">
           <label htmlFor="date">Data do lembrete</label>
-
           <div className='group-date'>
             <input
               className="field-date"
               id="date"
               type="date"
               name="date"
-              placeholder="Data do lembrete"
               value={date}
               onChange={handleDateChange}
-            /><br />
-            {erro ? <p className='erro'>data invalida</p> : null};
+            />
           </div>
         </div>
         <button onClick={handleSubmit}>Criar</button>
       </div>
-      <p>Lista de lembrete</p>
+      <p>Lista de lembretes</p>
       <div className="reminder-list">
         {reminders.reduce((accumulator, reminder) => {
           const existingDateIndex = accumulator.findIndex(
@@ -141,12 +128,11 @@ function App() {
           }
           return accumulator;
         }, []).map((item, index) => (
-
           <div key={index} className="reminder-item">
             <span>Data: {format(item.date, 'dd/MM/yyyy')}</span>
             <ul>
               {item.names.map((name, i) => (
-                <li key={i}>{name} <img onClick={() => remove(item.id)} className="group-img" src={logoclose}></img></li>
+                <li key={i}>{name} <img onClick={() => remove(item.id)} className="group-img" src={logoclose} alt="Close Icon" /></li>
               ))}
             </ul>
           </div>
